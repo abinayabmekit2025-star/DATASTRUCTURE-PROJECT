@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure for book
+struct Book {
+    int id;
+    char title[50];
+    char author[50];
+    int issued; // 0 = available, 1 = issued
+    struct Book* next;
+};
+
+struct Book* head = NULL;
+
+// Add Book
+void addBook() {
+    struct Book* newBook = (struct Book*)malloc(sizeof(struct Book));
+
+    printf("Enter Book ID: ");
+    scanf("%d", &newBook->id);
+
+    printf("Enter Title: ");
+    scanf(" %[^\n]", newBook->title);
+
+    printf("Enter Author: ");
+    scanf(" %[^\n]", newBook->author);
+
+    newBook->issued = 0;
+    newBook->next = head;
+    head = newBook;
+
+    printf("Book added successfully!\n");
+}
+
+// Display Books
+void displayBooks() {
+    struct Book* temp = head;
+
+    if (temp == NULL) {
+        printf("No books available.\n");
+        return;
+    }
+
+    printf("\nLibrary Books:\n");
+    while (temp != NULL) {
+        printf("ID: %d | Title: %s | Author: %s | Status: %s\n",
+               temp->id, temp->title, temp->author,
+               temp->issued ? "Issued" : "Available");
+        temp = temp->next;
+    }
+}
+
+// Search Book
+void searchBook() {
+    int id, found = 0;
+    printf("Enter Book ID to search: ");
+    scanf("%d", &id);
+
+    struct Book* temp = head;
+
+    while (temp != NULL) {
+        if (temp->id == id) {
+            printf("Book Found!\n");
+            printf("Title: %s\nAuthor: %s\nStatus: %s\n",
+                   temp->title, temp->author,
+                   temp->issued ? "Issued" : "Available");
+            found = 1;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    if (!found)
+        printf("Book not found.\n");
+}
+
+// Issue Book
+void issueBook() {
+    int id;
+    printf("Enter Book ID to issue: ");
+    scanf("%d", &id);
+
+    struct Book* temp = head;
+
+    while (temp != NULL) {
+        if (temp->id == id) {
+            if (temp->issued) {
+                printf("Book already issued.\n");
+            } else {
+                temp->issued = 1;
+                printf("Book issued successfully!\n");
+            }
+            return;
+        }
+        temp = temp->next;
+    }
+
+    printf("Book not found.\n");
+}
+
+// Return Book
+void returnBook() {
+    int id;
+    printf("Enter Book ID to return: ");
+    scanf("%d", &id);
+
+    struct Book* temp = head;
+
+    while (temp != NULL) {
+        if (temp->id == id) {
+            if (!temp->issued) {
+                printf("Book was not issued.\n");
+            } else {
+                temp->issued = 0;
+                printf("Book returned successfully!\n");
+            }
+            return;
+        }
+        temp = temp->next;
+    }
+
+    printf("Book not found.\n");
+}
+
+// Main Function
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n===== Library Management System =====\n");
+        printf("1. Add Book\n");
+        printf("2. Display Books\n");
+        printf("3. Search Book\n");
+        printf("4. Issue Book\n");
+        printf("5. Return Book\n");
+        printf("6. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: addBook(); break;
+            case 2: displayBooks(); break;
+            case 3: searchBook(); break;
+            case 4: issueBook(); break;
+            case 5: returnBook(); break;
+            case 6: exit(0);
+            default: printf("Invalid choice.\n");
+        }
+    }
+
+    return 0;
+}
